@@ -1,0 +1,290 @@
+<?php
+require_once 'config.php';
+
+// Traitement du formulaire de contact
+$message_envoye = false;
+$erreur_message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'contact') {
+    $nom = htmlspecialchars($_POST['nom']);
+    $email = htmlspecialchars($_POST['email']);
+    $sujet = htmlspecialchars($_POST['sujet']);
+    $message = htmlspecialchars($_POST['message']);
+    
+    // Validation basique
+    if (empty($nom) || empty($email) || empty($sujet) || empty($message)) {
+        $erreur_message = "Tous les champs sont obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erreur_message = "Veuillez entrer un email valide.";
+    } else {
+        try {
+            saveMessage($nom, $email, $sujet, $message);
+            $message_envoye = true;
+        } catch (Exception $e) {
+            $erreur_message = "Une erreur est survenue. Veuillez réessayer.";
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio - Développeur Web</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="#accueil">Mon Portfolio</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#competences">Compétences</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#formations">Formations</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section Accueil -->
+    <section id="accueil" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Bonjour, je suis <span class="highlight">SOBAKAM Thomas Yann</span></h1>
+                    <h2>Eleve en classe de terminale TI</h2>
+                    <p>Passionné par les nouvelles technologies . J'aspire a pouvoir contribuer au développement des nouvelles technologies</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary">Me contacter</a>
+                        <a href="#projets" class="btn btn-secondary">Voir mes projets</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="profile-placeholder">
+                        <i class="fas fa-code"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Compétences -->
+    <section id="competences" class="competences">
+        <div class="container">
+            <h2 class="section-title">Mes Compétences</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <i class="fab fa-html5"></i>
+                    <h3>HTML</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-css3-alt"></i>
+                    <h3>CSS</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-js"></i>
+                    <h3>JavaScript</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-php"></i>
+                    <h3>PHP</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fas fa-database"></i>
+                    <h3>MySQL</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 70%"></div>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <i class="fab fa-react"></i>
+                    <h3>Ionic et python</h3>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Projets -->
+    <section id="projets" class="projets">
+        <div class="container">
+            <h2 class="section-title">Mes Projets</h2>
+            <div class="projects-grid">
+                <!-- Projet 1 : Portfolio -->
+                <div class="project-card">
+                    <div class="project-icon">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <h3>Portfolio</h3>
+                    <p>Site portfolio personnel avec design moderne, responsive et formulaire de contact intégré avec base de données MySQL.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">HTML</span>
+                        <span class="tech-tag">CSS</span>
+                        <span class="tech-tag">PHP</span>
+                        <span class="tech-tag">MySQL</span>
+                    </div>
+                </div>
+
+                <!-- Projet 2 : Application de catalogue avec gestion des clients -->
+                <div class="project-card">
+                    <div class="project-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3>Application de catalogue</h3>
+                    <p>Application web de gestion de catalogue produits avec système de gestion des clients et suivi des articles populaires.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Ionic</span>
+                        <span class="tech-tag">MySQL</span>
+                        <span class="tech-tag">Express node.js</span>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Formations et Expériences -->
+    <section id="formations" class="formations">
+        <div class="container">
+            <h2 class="section-title">Formations & Expériences</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2026 - Présent</div>
+                    <div class="timeline-content">
+                        <h3>Eleve en terminale TI</h3>
+                        <h4>Collège Francois Xavier Vogt - Yaoundé Cameroun</h4>
+                        <p>Élève en Terminale TI au Collège Vogt, passionné par l'informatique et les nouvelles technologies. Motivé, sérieux et dynamique, je souhaite mettre en pratique mes connaissances tout en développant de nouvelles compétences.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2024-2025</div>
+                    <div class="timeline-content">
+                        <h3>Obtention du probatoire TI</h3>
+                        <h4>Collège Francois Xavier Vogt</h4>
+                        <p>En classe de première TI cette année fut pour moi le commencement de mon cursus dans l'informatique et l'année au bout de laquelle j'ai réalisé mon premier stage en entreprise</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2022 - 2023</div>
+                    <div class="timeline-content">
+                        <h3>Obtention de mon BEPC</h3>
+                        <h4>Collège Francois Xavier Vogt</h4>
+                        <p>En classe de troisième au collège Vogt j'obtient brillament mon BEPC (Brevet d'Etudes du Premier Cycle) avec la mention Bien</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2019-2021</div>
+                    <div class="timeline-content">
+                        <h3>Reste parcours et Obtention CFEE</h3>
+                        <h4>Cous Sacrée Coeur de Dakar - Sénégal</h4>
+                        <p>J'entre au Cours Sacrée Coeur (CSC) en classe de sixième juste après avoir eu mon CFEE a EBOA (Ecole Bilingue Ouest-Africaine) en classe de CM2</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contactez-moi</h2>
+            <?php if ($message_envoye): ?>
+                <div class="alert alert-success">
+                    Message envoyé avec succès ! Je vous répondrai dans les plus brefs délais.
+                </div>
+            <?php elseif ($erreur_message): ?>
+                <div class="alert alert-error">
+                    <?php echo $erreur_message; ?>
+                </div>
+            <?php endif; ?>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>tyso2009@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Téléphone</h4>
+                            <p>+237 696120365</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Localisation</h4>
+                            <p>Yaoundé, Cameroun</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <form method="POST" action="" class="contact-form">
+                    <input type="hidden" name="action" value="contact">
+                    <div class="form-group">
+                        <input type="text" name="nom" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Votre email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="sujet" placeholder="Sujet" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" rows="5" placeholder="Votre message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer le message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SOBAKAM Thomas Yann - Tous droits réservés !!</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
